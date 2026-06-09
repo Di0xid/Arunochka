@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Для тебя 💕</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose: #e8a0b8;
+      --rose-deep: #c96b8f;
+      --blush: #fce4ec;
+      --cream: #fff8f5;
+      --gold: #d4a574;
+      --text: #4a3040;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 40%, #f48fb1 100%);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .hearts-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 1.2rem;
+      opacity: 0.15;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(10deg); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(201, 107, 143, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress {
+      display: none;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .progress.visible { display: flex; }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--rose);
+      opacity: 0.3;
+      transition: all 0.4s ease;
+    }
+
+    .dot.active { opacity: 1; transform: scale(1.3); background: var(--rose-deep); }
+    .dot.done { opacity: 0.7; background: var(--gold); }
+
+    .dot {
+      cursor: pointer;
+      width: 12px;
+      height: 12px;
+    }
+
+    .dot:hover { opacity: 0.9; transform: scale(1.2); }
+
+    .page-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(201, 107, 143, 0.2);
+      flex-wrap: wrap;
+    }
+
+    .btn-nav {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.45rem 1rem;
+      border-radius: 50px;
+      border: 1px solid var(--rose);
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--rose-deep);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-nav:hover { background: white; }
+    .btn-nav:disabled { opacity: 0.35; cursor: default; }
+
+    .question-number {
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--rose-deep);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 2.5rem;
+      color: var(--text);
+    }
+
+    .welcome-screen h1 {
+      font-size: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .welcome-screen .emoji {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.9rem 2.5rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-yes {
+      background: linear-gradient(135deg, var(--rose-deep), #e91e63);
+      color: white;
+      box-shadow: 0 6px 20px rgba(201, 107, 143, 0.4);
+    }
+
+    .btn-yes:hover {
+      box-shadow: 0 8px 28px rgba(201, 107, 143, 0.55);
+    }
+
+    .btn-no {
+      background: white;
+      color: var(--rose-deep);
+      border: 2px solid var(--rose);
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Error overlay */
+    .error-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(74, 48, 64, 0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .error-overlay.show { display: flex; }
+
+    .error-box {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      max-width: 400px;
+      text-align: center;
+      animation: shake 0.5s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-12px); }
+      40% { transform: translateX(12px); }
+      60% { transform: translateX(-8px); }
+      80% { transform: translateX(8px); }
+    }
+
+    .error-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+    .error-box h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      margin-bottom: 0.75rem;
+      color: var(--rose-deep);
+    }
+
+    .error-box p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      color: #666;
+    }
+
+    /* Final screen */
+    .final-screen h1 { font-size: 2.2rem; }
+    .final-screen .subtitle {
+      font-size: 1.1rem;
+      color: var(--rose-deep);
+      margin-bottom: 2rem;
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .escape-zone {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .btn-escape {
+      position: fixed;
+      background: white;
+      color: var(--rose-deep);
+      border: 2px solid var(--rose);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.9rem 2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: left 0.12s ease, top 0.12s ease;
+      white-space: nowrap;
+      z-index: 51;
+      pointer-events: auto;
+      box-shadow: 0 4px 16px rgba(201, 107, 143, 0.25);
+    }
+
+    .final-screen .btn-yes {
+      position: relative;
+      z-index: 60;
+    }
+
+    .success-screen {
+      text-align: center;
+    }
+
+    .success-screen .big-heart {
+      font-size: 5rem;
+      animation: pulse 1.5s ease infinite;
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .success-screen h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .success-screen p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #666;
+    }
+
+    .couple-photo {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      border-radius: 16px;
+      object-fit: cover;
+      margin: 0 auto 1.5rem;
+      display: block;
+      box-shadow: 0 12px 40px rgba(201, 107, 143, 0.35);
+      border: 4px solid white;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-top: 1.5rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts-bg" id="heartsBg"></div>
+
+  <div class="container">
+    <div class="card" id="mainCard">
+      <div class="progress" id="progress"></div>
+
+      <!-- Question screens -->
+      <div id="screens"></div>
+
+      <div class="page-nav" id="pageNav">
+        <button class="btn-nav" id="navPrev" onclick="navPrev()">← Назад</button>
+        <button class="btn-nav" onclick="goToScreen(-1)">Старт</button>
+        <button class="btn-nav" id="navNext" onclick="navNext()">Далее →</button>
+        <button class="btn-nav" onclick="goToScreen('success')">Финал</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-overlay" id="errorOverlay">
+    <div class="error-box">
+      <div class="error-icon">😅</div>
+      <h2>Упс! Неправильный ответ</h2>
+      <p id="errorText">Попробуй ещё раз, я знаю правильный ответ 😉</p>
+      <button class="btn btn-yes" onclick="closeError()">Попробовать снова</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: 'Ты самая красивая девушка на свете?',
+        correct: 'yes',
+        errorMsg: 'Неприятно 💕'
+      },
+      {
+        text: 'Ты заслуживаешь всего самого лучшего?',
+        correct: 'yes',
+        errorMsg: 'Неприятно ✨'
+      },
+      {
+        text: 'Тебе нравится проводить время со мной?',
+        correct: 'yes',
+        errorMsg: 'Ну хз 😊'
+      },
+      {
+        text: 'Ты любишь меня?',
+        correct: 'yes',
+        errorMsg: 'Очень неприятно 🎁'
+      },
+      {
+        text: 'Ты будешь моей девушкой?',
+        correct: 'escape',
+        isFinal: true
+      }
+    ];
+
+    let currentQuestion = -1;
+    let onSuccess = false;
+
+    function init() {
+      createHearts();
+      createProgress();
+      createWelcomeScreen();
+      createScreens();
+      showWelcome();
+      setupKeyboardNav();
+    }
+
+    function setupKeyboardNav() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); navPrev(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); navNext(); }
+        if (e.key >= '1' && e.key <= '5') {
+          e.preventDefault();
+          goToScreen(parseInt(e.key, 10) - 1);
+        }
+        if (e.key === '0') { e.preventDefault(); goToScreen(-1); }
+        if (e.key === '9') { e.preventDefault(); goToScreen('success'); }
+      });
+    }
+
+    function getScreenState() {
+      if (onSuccess) return 'success';
+      if (currentQuestion < 0) return 'welcome';
+      return currentQuestion;
+    }
+
+    function goToScreen(target) {
+      document.getElementById('errorOverlay').classList.remove('show');
+
+      if (target === -1) {
+        showWelcome();
+        updateNavButtons();
+        return;
+      }
+
+      if (target === 'success') {
+        showSuccess();
+        updateNavButtons();
+        return;
+      }
+
+      if (target >= 0 && target < questions.length) {
+        document.getElementById('progress').classList.add('visible');
+        onSuccess = false;
+        currentQuestion = target;
+        showQuestion(target);
+        updateNavButtons();
+      }
+    }
+
+    function navPrev() {
+      const state = getScreenState();
+      if (state === 'welcome') return;
+      if (state === 'success') {
+        goToScreen(questions.length - 1);
+        return;
+      }
+      if (state === 0) {
+        goToScreen(-1);
+        return;
+      }
+      goToScreen(state - 1);
+    }
+
+    function navNext() {
+      const state = getScreenState();
+      if (state === 'welcome') {
+        goToScreen(0);
+        return;
+      }
+      if (state === 'success') return;
+      if (state < questions.length - 1) {
+        goToScreen(state + 1);
+        return;
+      }
+      goToScreen('success');
+    }
+
+    function updateNavButtons() {
+      const prev = document.getElementById('navPrev');
+      const next = document.getElementById('navNext');
+      if (!prev || !next) return;
+
+      const state = getScreenState();
+      prev.disabled = state === 'welcome';
+      next.disabled = state === 'success';
+    }
+
+    function createWelcomeScreen() {
+      const container = document.getElementById('screens');
+      const welcome = document.createElement('div');
+      welcome.className = 'screen active';
+      welcome.id = 'screen-welcome';
+      welcome.innerHTML = `
+        <div class="welcome-screen">
+          <span class="emoji">💕</span>
+          <h1>Небольшой тест для Аруночки</h1>
+          <button class="btn btn-yes" onclick="startQuiz()">Поехали!</button>
+        </div>
+      `;
+      container.appendChild(welcome);
+    }
+
+    function showWelcome() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-welcome').classList.add('active');
+      document.getElementById('progress').classList.remove('visible');
+      hideEscapeButton();
+      currentQuestion = -1;
+      onSuccess = false;
+      updateNavButtons();
+    }
+
+    function startQuiz() {
+      goToScreen(0);
+    }
+
+    function createHearts() {
+      const bg = document.getElementById('heartsBg');
+      const symbols = ['💕', '💖', '💗', '♥', '🌸'];
+      for (let i = 0; i < 20; i++) {
+        const h = document.createElement('span');
+        h.className = 'heart';
+        h.textContent = symbols[i % symbols.length];
+        h.style.left = Math.random() * 100 + '%';
+        h.style.top = Math.random() * 100 + '%';
+        h.style.animationDelay = Math.random() * 5 + 's';
+        h.style.fontSize = (0.8 + Math.random() * 1.5) + 'rem';
+        bg.appendChild(h);
+      }
+    }
+
+    function createProgress() {
+      const progress = document.getElementById('progress');
+      questions.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.id = 'dot-' + i;
+        dot.title = 'Вопрос ' + (i + 1);
+        dot.addEventListener('click', () => goToScreen(i));
+        progress.appendChild(dot);
+      });
+    }
+
+    function updateProgress() {
+      if (currentQuestion < 0) return;
+      questions.forEach((_, i) => {
+        const dot = document.getElementById('dot-' + i);
+        dot.className = 'dot';
+        if (i < currentQuestion) dot.classList.add('done');
+        if (i === currentQuestion) dot.classList.add('active');
+      });
+    }
+
+    function createScreens() {
+      const container = document.getElementById('screens');
+
+      questions.forEach((q, i) => {
+        const screen = document.createElement('div');
+        screen.className = 'screen';
+        screen.id = 'screen-' + i;
+
+        if (q.isFinal) {
+          screen.innerHTML = `
+            <div class="final-screen">
+              <div class="question-number">Вопрос ${i + 1} из 5</div>
+              <h1>${q.text}</h1>
+              <p class="subtitle">Попробуй нажать на кнопку ниже...</p>
+              <div class="escape-zone" id="escapeZone"></div>
+              <div class="buttons" style="margin-top: 2rem;">
+                <button class="btn btn-yes" onclick="answerFinal()">Да, конечно! 💕</button>
+              </div>
+              <p class="hint">* кнопка «Нет» очень застенчивая...</p>
+            </div>
+          `;
+        } else {
+          screen.innerHTML = `
+            <div class="question-number">Вопрос ${i + 1} из 5</div>
+            <h1>${q.text}</h1>
+            <div class="buttons">
+              <button class="btn btn-yes" onclick="answer(${i}, 'yes')">Да 💕</button>
+              <button class="btn btn-no" onclick="answer(${i}, 'no')">Нет</button>
+            </div>
+          `;
+        }
+
+        container.appendChild(screen);
+      });
+
+      // Success screen
+      const success = document.createElement('div');
+      success.className = 'screen';
+      success.id = 'screen-success';
+      success.innerHTML = `
+        <div class="success-screen">
+          <img class="couple-photo" id="couplePhoto" src="photo.png" alt="Мы с тобой 💕">
+          <span class="big-heart">💖</span>
+          <h1>Я так и знал!</h1>
+          <p>Ты сделала правильный выбор.<br>Теперь мы вместе — и это самое прекрасное! 💕</p>
+        </div>
+      `;
+      container.appendChild(success);
+    }
+
+    function showQuestion(index) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const screen = document.getElementById('screen-' + index);
+      if (screen) {
+        screen.classList.add('active');
+        screen.style.animation = 'none';
+        screen.offsetHeight;
+        screen.style.animation = '';
+      }
+      updateProgress();
+
+      onSuccess = false;
+
+      if (questions[index]?.isFinal) {
+        setTimeout(initEscapeButton, 100);
+      } else {
+        hideEscapeButton();
+      }
+
+      updateNavButtons();
+    }
+
+    function showSuccess() {
+      hideEscapeButton();
+      onSuccess = true;
+      document.getElementById('progress').classList.add('visible');
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-success').classList.add('active');
+      document.querySelectorAll('.dot').forEach(d => {
+        d.className = 'dot done';
+      });
+      loadCouplePhoto();
+      updateNavButtons();
+    }
+
+    function answer(index, choice) {
+      const q = questions[index];
+      if (choice === q.correct) {
+        currentQuestion = index + 1;
+        if (currentQuestion < questions.length) {
+          showQuestion(currentQuestion);
+        }
+      } else {
+        showError(q.errorMsg, index);
+      }
+    }
+
+    function showError(msg, returnTo) {
+      document.getElementById('errorText').textContent = msg;
+      document.getElementById('errorOverlay').classList.add('show');
+      window._returnTo = returnTo;
+    }
+
+    function closeError() {
+      document.getElementById('errorOverlay').classList.remove('show');
+      if (window._returnTo !== undefined) {
+        currentQuestion = window._returnTo;
+        showQuestion(window._returnTo);
+      }
+    }
+
+    function answerFinal() {
+      showSuccess();
+    }
+
+    function loadCouplePhoto() {
+      const img = document.getElementById('couplePhoto');
+      const formats = ['photo.png', 'photo.jpg', 'photo.jpeg', 'photo.webp'];
+      let i = 0;
+      img.onerror = () => {
+        i++;
+        if (i < formats.length) img.src = formats[i];
+        else img.style.display = 'none';
+      };
+      img.src = formats[0];
+    }
+
+    let escapeBtn = null;
+    let escapeMoveHandler = null;
+
+    function hideEscapeButton() {
+      if (escapeMoveHandler) {
+        document.removeEventListener('mousemove', escapeMoveHandler);
+        document.removeEventListener('touchmove', escapeMoveHandler);
+        escapeMoveHandler = null;
+      }
+      if (escapeBtn) {
+        escapeBtn.remove();
+        escapeBtn = null;
+      }
+    }
+
+    function initEscapeButton() {
+      hideEscapeButton();
+
+      escapeBtn = document.createElement('button');
+      escapeBtn.className = 'btn-escape';
+      escapeBtn.id = 'escapeBtn';
+      escapeBtn.textContent = 'Нет, не буду 😤';
+      document.body.appendChild(escapeBtn);
+
+      const padding = 16;
+
+      function centerButton() {
+        escapeBtn.style.left = '50%';
+        escapeBtn.style.top = '50%';
+        escapeBtn.style.transform = 'translate(-50%, -50%)';
+      }
+
+      function moveButton() {
+        const btnW = escapeBtn.offsetWidth;
+        const btnH = escapeBtn.offsetHeight;
+        const maxX = window.innerWidth - btnW - padding;
+        const maxY = window.innerHeight - btnH - padding;
+        const x = padding + Math.random() * Math.max(0, maxX - padding);
+        const y = padding + Math.random() * Math.max(0, maxY - padding);
+        escapeBtn.style.left = x + 'px';
+        escapeBtn.style.top = y + 'px';
+        escapeBtn.style.transform = 'none';
+      }
+
+      centerButton();
+
+      escapeBtn.addEventListener('mouseenter', moveButton);
+      escapeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        moveButton();
+      });
+      escapeBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        moveButton();
+      });
+
+      escapeMoveHandler = (e) => {
+        const point = e.touches ? e.touches[0] : e;
+        const btnRect = escapeBtn.getBoundingClientRect();
+        const btnCenterX = btnRect.left + btnRect.width / 2;
+        const btnCenterY = btnRect.top + btnRect.height / 2;
+        const dist = Math.hypot(point.clientX - btnCenterX, point.clientY - btnCenterY);
+        if (dist < 140) moveButton();
+      };
+
+      document.addEventListener('mousemove', escapeMoveHandler);
+      document.addEventListener('touchmove', escapeMoveHandler, { passive: false });
+    }
+
+    init();
+  </script>
+</body>
+</html>
